@@ -44,9 +44,11 @@ struct Home: View {
                             
                                 .visualEffect { view, proxy in
                                     view.offset(y: offsetSlider(proxy))
+                                        .offset(y: scaleActiveProduct(proxy) * -15)
                                 }
                                 .scrollTransition(.interactive, axis: .horizontal) { view, phase in
-                                    view.offset(y: phase.isIdentity && activeID == product.id ? -15 : 0)
+                                    view
+//                                        .offset(y: phase.isIdentity && activeID == product.id ? -15 : 0)
                                 }
                         }
                     }
@@ -72,6 +74,12 @@ struct Home: View {
         let progress = progress(proxy)
         //Перемещение представления вверх/вниз на основе прогресса
         return progress < 0 ? progress * 30 : progress * -30
+    }
+    
+    func scaleActiveProduct(_ proxy: GeometryProxy) -> CGFloat {
+        let progress = min(max(progress(proxy), -1), 1)
+        
+        return progress < 0 ? 1 + progress : 1 - progress
     }
     
     func progress(_ proxy: GeometryProxy) -> CGFloat {
